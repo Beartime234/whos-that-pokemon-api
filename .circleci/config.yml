@@ -61,9 +61,9 @@ jobs: # basic units of work in a run
 
     steps:
       - checkout
-      - - attach_workspace:
-            # Must be absolute path or relative path from working_directory
-            at: bin
+      - attach_workspace:
+          # Must be absolute path or relative path from working_directory
+          at: bin
 
       # Download and cache dependencies
       - restore_cache:
