@@ -44,7 +44,7 @@ package:
 
 functions:
   api:
-    handler: bin/api
+    handler: bin/main
     events:
       - http:
           path: api
