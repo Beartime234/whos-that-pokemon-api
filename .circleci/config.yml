@@ -31,6 +31,7 @@ jobs: # basic units of work in a run
           name: Run unit tests
           # Store the results of our tests in the $TEST_RESULTS directory
           command: |
+            go get -u github.com/jstemmer/go-junit-report
             trap "go-junit-report <${TEST_RESULTS}/go-test.out > ${TEST_RESULTS}/go-test-report.xml" EXIT
             make test | tee ${TEST_RESULTS}/go-test.out
 
