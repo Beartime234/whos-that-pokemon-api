@@ -8,7 +8,7 @@ clean:
 	rm -rf ./bin ./vendor Gopkg.lock
 
 test:
-	go test ./api/... -v
+	go test ./api_test/... -v
 
 deploy: clean build
 	sls deploy --verbose
