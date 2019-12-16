@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
@@ -15,16 +16,22 @@ import (
 // https://serverless.com/framework/docs/providers/aws/events/apigateway/#lambda-proxy-integration
 type Response events.APIGatewayProxyResponse
 
+type Request struct {
+	ID int `json:"id"`
+}
+
 // Handler is our lambda handler invoked by the `lambda.Start` function call
-func Handler(ctx context.Context) (Response, error) {
+func Handler(request Request, ctx context.Context) (Response, error) {
 	var buf bytes.Buffer
 
 	body, err := json.Marshal(map[string]interface{}{
-		"message": "Go Serverless v1.0! Your function executed successfully!",
+		"message": fmt.Sprintf("Your ID is %d", request.ID),
 	})
+
 	if err != nil {
 		return Response{StatusCode: 404}, err
 	}
+
 	json.HTMLEscape(&buf, body)
 
 	resp := Response{
@@ -33,15 +40,11 @@ func Handler(ctx context.Context) (Response, error) {
 		Body:            buf.String(),
 		Headers: map[string]string{
 			"Content-Type":           "application/json",
-			"X-MyCompany-Func-Reply": "api-handler",
+			"X-WTP-Func-Reply": "api-Handler",
 		},
 	}
 
 	return resp, nil
-}
-
-func testMe() string {
-	return "Hi"
 }
 
 func main() {
