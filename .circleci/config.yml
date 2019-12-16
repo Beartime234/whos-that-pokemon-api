@@ -43,7 +43,7 @@ jobs: # basic units of work in a run
             - "/go/pkg"
 
       - persist_to_workspace:  # Persists the build to the workspace
-          root: workspace
+          root: ./
           paths:
             - bin
 
