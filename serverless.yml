@@ -1,16 +1,3 @@
-# Welcome to Serverless!
-#
-# This file is the main config file for your service.
-# It's very minimal at this point and uses default values.
-# You can always add more config options for more control.
-# We've included some commented out config examples here.
-# Just uncomment any of them to get that config option.
-#
-# For full config options, check the docs:
-#    docs.serverless.com
-#
-# Happy Coding!
-
 service: whos-that-pokemon
 # app and org for use with dashboard.serverless.com
 #app: your-app-name
@@ -56,17 +43,11 @@ package:
     - ./bin/**
 
 functions:
-  hello:
-    handler: bin/hello
+  api:
+    handler: bin/api
     events:
       - http:
-          path: hello
-          method: get
-  world:
-    handler: bin/world
-    events:
-      - http:
-          path: world
+          path: api
           method: get
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
@@ -94,7 +75,7 @@ functions:
 #            detail:
 #              state:
 #                - pending
-#      - cloudwatchLog: '/aws/lambda/hello'
+#      - cloudwatchLog: '/aws/lambda/api'
 #      - cognitoUserPool:
 #          pool: MyUserPool
 #          trigger: PreSignUp
@@ -103,7 +84,7 @@ functions:
 #          priority: 1
 #          conditions:
 #            host: example.com
-#            path: /hello
+#            path: /api
 
 #    Define function environment variables here
 #    environment:
