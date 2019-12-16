@@ -1,4 +1,4 @@
-.PHONY: build clean deploy
+.PHONY: test build clean deploy
 
 build:
 	dep ensure -v
@@ -6,6 +6,9 @@ build:
 
 clean:
 	rm -rf ./bin ./vendor Gopkg.lock
+
+test:
+	go test ./api/... -v
 
 deploy: clean build
 	sls deploy --verbose

@@ -40,6 +40,10 @@ func Handler(ctx context.Context) (Response, error) {
 	return resp, nil
 }
 
+func testMe() string {
+	return "Hi"
+}
+
 func main() {
 	lambda.Start(Handler)
 }
