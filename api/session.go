@@ -12,6 +12,7 @@ type GameSession struct {
 	ExpirationTime time.Time // When this is removed from the session database
 }
 
+//NewGameSession Creates a new Game Session
 func NewGameSession() *GameSession {
 	id := uuid.New()
 	return &GameSession{
