@@ -5,7 +5,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 )
@@ -17,15 +16,17 @@ import (
 type Response events.APIGatewayProxyResponse
 
 type Request struct {
-	ID int `json:"id"`
+
 }
 
 // Handler is our lambda handler invoked by the `lambda.Start` function call
-func Handler(ctx context.Context, request Request) (Response, error) {
+func Handler(ctx context.Context, request *Request) (Response, error) {
 	var buf bytes.Buffer
 
+	session := NewGameSession()
+
 	body, err := json.Marshal(map[string]interface{}{
-		"message": fmt.Sprintf("Your ID is %d", request.ID),
+		"message": fmt.Sprintf("Your ID is %s", session.ID),
 	})
 
 	if err != nil {
@@ -39,8 +40,8 @@ func Handler(ctx context.Context, request Request) (Response, error) {
 		IsBase64Encoded: false,
 		Body:            buf.String(),
 		Headers: map[string]string{
-			"Content-Type":           "application/json",
-			"X-WTP-Func-Reply": "api-Handler",
+			"Content-Type":			"application/json",
+			"X-WTP-Func-Reply":		"api-Handler",
 		},
 	}
 
