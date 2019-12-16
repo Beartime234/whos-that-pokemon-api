@@ -21,7 +21,7 @@ type Request struct {
 }
 
 // Handler is our lambda handler invoked by the `lambda.Start` function call
-func Handler(request Request, ctx context.Context) (Response, error) {
+func Handler(ctx context.Context, request Request) (Response, error) {
 	var buf bytes.Buffer
 
 	body, err := json.Marshal(map[string]interface{}{
