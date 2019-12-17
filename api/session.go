@@ -11,7 +11,7 @@ import (
 type GameSession struct {
 	SessionID      string    // The id for the session. Should be a randomly generated UUID
  	StartTime      time.Time // When the player started the game
- 	CurrentPokemon *Pokemon  // Their Current Pokemon
+ 	CurrentPokemon *Pokemon  // The users Current Pokemon
 	ExpirationTime time.Time // When this is removed from the session database
 }
 
