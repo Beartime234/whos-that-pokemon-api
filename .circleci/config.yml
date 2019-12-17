@@ -168,7 +168,7 @@ workflows:
             - deploy_dev
       - deploy_prod:
           requires:
-            - build
+            - test
           filters:
             branches:
               only: master
