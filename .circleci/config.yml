@@ -9,13 +9,82 @@ jobs: # basic units of work in a run
     # directory where steps are run. Path must conform to the Go Workspace requirements
     working_directory: /go/src/github.com/Beartime234/whos-that-pokemon
 
+    steps: # steps that comprise the `build` job
+      - checkout # check out source code to working directory
+      - run:
+          name: Install dep
+          command: |
+            apk update && apk add curl git build-base bash
+            curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+            dep ensure -v
+
+      - restore_cache: # restores saved cache if no changes are detected since last run
+          # Read about caching dependencies: https://circleci.com/docs/2.0/caching/
+          keys:
+            - v1-pkg-cache
+      - run: make # pull and build dependencies for the project
+
+      - save_cache: # Store cache in the /go/pkg directory
+          key: v1-pkg-cache
+          paths:
+            - "/go/pkg"
+
+      - persist_to_workspace:  # Persists the build to the workspace
+          root: ./
+          paths:
+            - bin
+  deploy_dev:
+    docker:
+      - image: circleci/node:8.10
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+      - attach_workspace:
+          # Must be absolute path or relative path from working_directory
+          at: ./
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v1-dependencies-
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+
+      - run:
+          name: Install Serverless CLI and dependencies
+          command: |
+            sudo npm i -g serverless
+            npm install
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-
+
+      - run:
+          name: Deploy application
+          command: sls deploy -s dev
+  test: # runs not using Workflows must have a `build` job as entry point
+    docker: # run the steps with Docker
+      # CircleCI Go images available at: https://hub.docker.com/r/circleci/golang/
+      - image: circleci/golang:1.12
+
+
+    # directory where steps are run. Path must conform to the Go Workspace requirements
+    working_directory: /go/src/github.com/Beartime234/whos-that-pokemon
+
     environment: # environment variables for the build itself
       TEST_RESULTS: /tmp/test-results # path to where test results will be saved
       GALLERY_TABLE_NAME: PokemonGalleryTable
-      SESSION_TABLE_NAME: WhosThatPokemonSessionTable-prod
+      SESSION_TABLE_NAME: WhosThatPokemonSessionTable-dev
 
     steps: # steps that comprise the `build` job
       - checkout # check out source code to working directory
+      - attach_workspace:
+          # Must be absolute path or relative path from working_directory
+          at: ./
       - run: mkdir -p $TEST_RESULTS # create the test results directory
       - run:
           name: Install dep
@@ -37,8 +106,6 @@ jobs: # basic units of work in a run
             trap "go-junit-report <${TEST_RESULTS}/go-test.out > ${TEST_RESULTS}/go-test-report.xml" EXIT
             make test | tee ${TEST_RESULTS}/go-test.out
 
-      - run: make # pull and build dependencies for the project
-
       - save_cache: # Store cache in the /go/pkg directory
           key: v1-pkg-cache
           paths:
@@ -55,7 +122,7 @@ jobs: # basic units of work in a run
 
       - store_test_results: # Upload test results for display in Test Summary: https://circleci.com/docs/2.0/collect-test-data/
           path: /tmp/test-results
-  deploy:
+  deploy_prod:
     docker:
       - image: circleci/node:8.10
 
@@ -93,7 +160,13 @@ workflows:
   full_run:
     jobs:
       - build
-      - deploy:
+      - deploy_dev
+          requires:
+            - build
+      - test:
+          requires:
+            - deploy_dev
+      - deploy_prod:
           requires:
             - build
           filters:
