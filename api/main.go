@@ -30,7 +30,7 @@ func Handler(ctx context.Context, request *Request) (Response, error) {
 	session := NewGameSession()
 
 	//body, err := json.Marshal(map[string]interface{}{
-	//	"message": fmt.Sprintf("Your ID is %s", session.ID),
+	//	"message": fmt.Sprintf("Your SessionID is %s", session.SessionID),
 	//})
 
 	body, err := json.Marshal(session)

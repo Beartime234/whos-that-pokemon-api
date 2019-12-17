@@ -41,7 +41,7 @@ func GetRandomPokemon() *Pokemon {
 func GenerateRandomPokedexID() int {
 	rand.Seed(time.Now().UnixNano()) // Generate a seed so it's random every time we call this
 	randomNumber := rand.Intn(MaxPokemon) + 1
-	log.Printf("Pokemon ID: %d", randomNumber)
+	log.Printf("Pokemon SessionID: %d", randomNumber)
 	return randomNumber
 }
 

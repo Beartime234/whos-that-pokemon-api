@@ -115,12 +115,15 @@ resources:
       Properties:
         AttributeDefinitions:
           - AttributeName: "SessionID"
-            AttributeType: "N"
+            AttributeType: "S"
         KeySchema:
           - AttributeName: "SessionID"
             KeyType: "HASH"
         BillingMode: "PAY_PER_REQUEST"
         TableName: ${self:custom.SessionTableName}
+        TimeToLiveSpecification:
+          AttributeName: ExpirationName
+          Enabled: True
 #  Resources:
 #    NewResource:
 #      Type: AWS::S3::Bucket
