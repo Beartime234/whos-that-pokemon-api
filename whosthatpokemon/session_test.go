@@ -6,8 +6,12 @@ import (
 )
 
 func TestGameSession_save(t *testing.T) {
-	session := NewGameSession()
-	err := session.save()
+	session, err := NewGameSession()
+	if err != nil {
+		log.Fatal("Failed creating new session not saving")
+	}
+
+	err = session.save()
 
 	if err != nil {
 		log.Fatal(err)
@@ -15,12 +19,18 @@ func TestGameSession_save(t *testing.T) {
 }
 
 func TestNewGameSession(t *testing.T) {
-	_ = NewGameSession()
+	_, err := NewGameSession()
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func TestLoadGameSession(t *testing.T) {
-	session := NewGameSession()
-	err := session.save()
+	session, err := NewGameSession()
+	if err != nil {
+		log.Fatal("Failed creating new session not saving")
+	}
+	err = session.save()
 	if err != nil {
 		log.Fatal("Error in saving or creating session, load game session was not the problem here")
 	}
