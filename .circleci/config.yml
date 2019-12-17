@@ -12,6 +12,7 @@ jobs: # basic units of work in a run
     environment: # environment variables for the build itself
       TEST_RESULTS: /tmp/test-results # path to where test results will be saved
       GALLERY_TABLE_NAME: PokemonGalleryTable
+      SESSION_TABLE_NAME: WhosThatPokemonSessionTable-prod
 
     steps: # steps that comprise the `build` job
       - checkout # check out source code to working directory
