@@ -160,7 +160,7 @@ workflows:
   full_run:
     jobs:
       - build
-      - deploy_dev
+      - deploy_dev:
           requires:
             - build
       - test:
