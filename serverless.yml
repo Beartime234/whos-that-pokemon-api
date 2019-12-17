@@ -142,7 +142,7 @@ resources:
         BillingMode: "PAY_PER_REQUEST"
         TableName: ${self:custom.SessionTableName}
         TimeToLiveSpecification:
-          AttributeName: ExpirationName
+          AttributeName: ExpirationTime
           Enabled: True
 #  Resources:
 #    NewResource:
