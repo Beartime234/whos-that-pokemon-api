@@ -15,6 +15,11 @@ type GameSession struct {
 	ExpirationTime time.Time // When this is removed from the session database
 }
 
+type StrippedGameSession struct {
+	SessionID string
+	CurrentPokemon *StrippedPokemon
+}
+
 //NewGameSession Creates a new Game Session
 func NewGameSession() *GameSession {
 	id := uuid.New()
@@ -22,7 +27,7 @@ func NewGameSession() *GameSession {
 		SessionID:      id.String(),
 		StartTime:      time.Now(),
 		CurrentPokemon: NewPokemon(),
-		ExpirationTime: time.Now().Add(time.Hour * 6),  // Create a expiration time for this in 6 hours
+		ExpirationTime: time.Now().Add(time.Hour * 6),  // Create a expiration time for this item.
 	}
 }
 
@@ -37,4 +42,11 @@ func (gs *GameSession) save () error {
 	}
 
 	return nil
+}
+
+func (gs *GameSession) NewStrippedSession() *StrippedGameSession{
+	return &StrippedGameSession{
+		SessionID:      gs.SessionID,
+		CurrentPokemon: gs.CurrentPokemon.NewStrippedPokemon(),
+	}
 }

@@ -18,6 +18,11 @@ type Pokemon struct {
 	BWImageUrl string `dynamo:"BWImageUrl"`
 }
 
+// This type is what we return to users so that they can't see everything
+type StrippedPokemon struct {
+	BWImageUrl string
+}
+
 //GetRandomPokemon Gets a random pokemon from the gallery database
 func GetRandomPokemon() *Pokemon {
 	db := dynamo.New(session.New(), &aws.Config{Region:aws.String("us-east-1", )})
@@ -47,4 +52,8 @@ func GenerateRandomPokedexID() int {
 
 func NewPokemon() *Pokemon {
 	return GetRandomPokemon()
+}
+
+func (poke *Pokemon) NewStrippedPokemon() *StrippedPokemon {
+	return &StrippedPokemon{BWImageUrl:poke.BWImageUrl}
 }

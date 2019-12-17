@@ -27,13 +27,17 @@ var SessionTableName = os.Getenv("SESSION_TABLE_NAME")
 func Handler(ctx context.Context, request *Request) (Response, error) {
 	var buf bytes.Buffer
 
-	session := NewGameSession()
+	session := NewGameSession()  // Create a new session
 
-	//body, err := json.Marshal(map[string]interface{}{
-	//	"message": fmt.Sprintf("Your SessionID is %s", session.SessionID),
-	//})
+	err := session.save() // Save the session in the database so we can get it later
 
-	body, err := json.Marshal(session)
+	if err != nil {
+		return Response{StatusCode: 404}, err
+	}
+
+	strippedSession := session.NewStrippedSession()
+
+	body, err := json.Marshal(strippedSession)
 
 	if err != nil {
 		return Response{StatusCode: 404}, err
@@ -50,7 +54,6 @@ func Handler(ctx context.Context, request *Request) (Response, error) {
 			"X-WTP-Func-Reply":		"api-Handler",
 		},
 	}
-
 	return resp, nil
 }
 
