@@ -4,9 +4,9 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"fmt"
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
+	"os"
 )
 
 // Response is of type APIGatewayProxyResponse since we're leveraging the
@@ -19,15 +19,21 @@ type Request struct {
 
 }
 
+var GalleryTableName = os.Getenv("GALLERY_TABLE_NAME")
+const GalleryTableHashKey = "PokedexID"
+var SessionTableName = os.Getenv("SESSION_TABLE_NAME")
+
 // Handler is our lambda handler invoked by the `lambda.Start` function call
 func Handler(ctx context.Context, request *Request) (Response, error) {
 	var buf bytes.Buffer
 
 	session := NewGameSession()
 
-	body, err := json.Marshal(map[string]interface{}{
-		"message": fmt.Sprintf("Your ID is %s", session.ID),
-	})
+	//body, err := json.Marshal(map[string]interface{}{
+	//	"message": fmt.Sprintf("Your ID is %s", session.ID),
+	//})
+
+	body, err := json.Marshal(session)
 
 	if err != nil {
 		return Response{StatusCode: 404}, err
