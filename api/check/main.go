@@ -16,18 +16,21 @@ import (
 type Response events.APIGatewayProxyResponse
 
 type Request struct {
-
+	SessionID string  `json:"SessionID"`
+	PokemonNameGuess string `json:"PokemonNameGuess"`
 }
 
 // Handler is our lambda handler invoked by the `lambda.Start` function call
 func Handler(ctx context.Context, request *Request) (Response, error) {
 	var buf bytes.Buffer
 
-	session, err := whosthatpokemon.NewGameSession()  // Create a new session
+	session, err := whosthatpokemon.LoadGameSession(request.SessionID)  // Create a new session
 
 	if err != nil {
 		return Response{StatusCode: 404}, err
 	}
+
+	_ = session.NewPokemon()  // TODO handle the error
 
 	body, err := json.Marshal(session.NewStrippedSession())
 

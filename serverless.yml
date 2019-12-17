@@ -77,14 +77,23 @@ package:
     - ./bin/**
 
 functions:
-  api:
+  start:
     handler: bin/start
     timeout: 10
     memorySize: 1024
-    description: Whos that Pokemon API
+    description: Whos that Pokemon API. Start function.
     events:
       - http:
           path: wtp/start
+          method: post
+  check:
+    handler: bin/check
+    timeout: 10
+    memorySize: 1024
+    description: Whos that Pokemon API. Check function.
+    events:
+      - http:
+          path: wtp/check
           method: post
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events

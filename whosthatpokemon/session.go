@@ -36,7 +36,7 @@ func NewGameSession() (*GameSession, error) {
 	return newSession, nil
 }
 
-func LoadGameSession(sessionID string) *GameSession {
+func LoadGameSession(sessionID string) (*GameSession, error) {
 	db := dynamo.New(session.New(), &aws.Config{Region:aws.String("us-east-1", )})
 	table := db.Table(conf.SessionTable.TableName)
 
@@ -44,10 +44,10 @@ func LoadGameSession(sessionID string) *GameSession {
 	err := table.Get(conf.SessionTable.HashKey, sessionID).One(&result)
 
 	if err != nil {
-		panic(err) // No point
+		return nil, err
 	}
 
-	return result
+	return result, nil
 }
 
 func (gs *GameSession) NewStrippedSession() *StrippedGameSession{
@@ -70,3 +70,17 @@ func (gs *GameSession) save () error {
 	return nil
 }
 
+func (gs *GameSession) NewPokemon () error {
+	// TODO unexport this and make it so that its part of the check function
+	gs.CurrentPokemon = NewPokemon() // Get a new pokemon
+	err := gs.save()
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (gs *GameSession) Check () error {
+	// TODO implement
+	return nil
+}
