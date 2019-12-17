@@ -1,7 +1,10 @@
 package main
 
 import (
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/google/uuid"
+	"github.com/guregu/dynamo"
 	"time"
 )
 
@@ -21,4 +24,17 @@ func NewGameSession() *GameSession {
 		CurrentPokemon: NewPokemon(),
 		ExpirationTime: time.Now().Add(time.Hour * 6),  // Create a expiration time for this in 6 hours
 	}
+}
+
+func (gs *GameSession) save () error {
+	db := dynamo.New(session.New(), &aws.Config{Region:aws.String("us-east-1", )})
+	table := db.Table(SessionTableName)
+
+	err := table.Put(gs).Run()
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
