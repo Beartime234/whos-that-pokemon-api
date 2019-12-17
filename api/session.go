@@ -31,6 +31,27 @@ func NewGameSession() *GameSession {
 	}
 }
 
+func LoadGameSession(sessionID string) *GameSession {
+	db := dynamo.New(session.New(), &aws.Config{Region:aws.String("us-east-1", )})
+	table := db.Table(SessionTableName)
+
+	var result *GameSession
+	err := table.Get(SessionTableHashKey, sessionID).One(&result)
+
+	if err != nil {
+		panic(err) // No point
+	}
+
+	return result
+}
+
+func (gs *GameSession) NewStrippedSession() *StrippedGameSession{
+	return &StrippedGameSession{
+		SessionID:      gs.SessionID,
+		CurrentPokemon: gs.CurrentPokemon.NewStrippedPokemon(),
+	}
+}
+
 func (gs *GameSession) save () error {
 	db := dynamo.New(session.New(), &aws.Config{Region:aws.String("us-east-1", )})
 	table := db.Table(SessionTableName)
@@ -44,9 +65,3 @@ func (gs *GameSession) save () error {
 	return nil
 }
 
-func (gs *GameSession) NewStrippedSession() *StrippedGameSession{
-	return &StrippedGameSession{
-		SessionID:      gs.SessionID,
-		CurrentPokemon: gs.CurrentPokemon.NewStrippedPokemon(),
-	}
-}

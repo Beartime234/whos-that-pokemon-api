@@ -22,6 +22,7 @@ type Request struct {
 var GalleryTableName = os.Getenv("GALLERY_TABLE_NAME")
 const GalleryTableHashKey = "PokedexID"
 var SessionTableName = os.Getenv("SESSION_TABLE_NAME")
+const SessionTableHashKey = "SessionID"
 
 // Handler is our lambda handler invoked by the `lambda.Start` function call
 func Handler(ctx context.Context, request *Request) (Response, error) {
