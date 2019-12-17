@@ -1,6 +1,7 @@
-package main
+package whosthatpokemon
 
 import (
+	"github.com/Beartime234/whos-that-pokemon/whosthatpokemon/config"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/guregu/dynamo"
@@ -10,6 +11,8 @@ import (
 )
 
 const MaxPokemon = 807
+
+var conf = config.New()
 
 type Pokemon struct {
 	PokedexID int `dynamo:"PokedexID"`
@@ -26,12 +29,12 @@ type StrippedPokemon struct {
 //GetRandomPokemon Gets a random pokemon from the gallery database
 func GetRandomPokemon() *Pokemon {
 	db := dynamo.New(session.New(), &aws.Config{Region:aws.String("us-east-1", )})
-	table := db.Table(GalleryTableName)
+	table := db.Table(conf.GalleryTable.TableName)
 
 	pokedexID := GenerateRandomPokedexID()
 
 	var result *Pokemon
-	err := table.Get(GalleryTableHashKey, pokedexID).One(&result)
+	err := table.Get(conf.GalleryTable.HashKey, pokedexID).One(&result)
 
 	if err != nil {
 		panic(err) // No point

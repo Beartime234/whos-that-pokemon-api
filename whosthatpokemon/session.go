@@ -1,4 +1,4 @@
-package main
+package whosthatpokemon
 
 import (
 	"github.com/aws/aws-sdk-go/aws"
@@ -21,22 +21,27 @@ type StrippedGameSession struct {
 }
 
 //NewGameSession Creates a new Game Session
-func NewGameSession() *GameSession {
+func NewGameSession() (*GameSession, error) {
 	id := uuid.New()
-	return &GameSession{
+	newSession := &GameSession{
 		SessionID:      id.String(),
 		StartTime:      time.Now(),
 		CurrentPokemon: NewPokemon(),
 		ExpirationTime: time.Now().Add(time.Hour * 6),  // Create a expiration time for this item.
 	}
+	err := newSession.save()
+	if err != nil {
+		return nil, err
+	}
+	return newSession, nil
 }
 
 func LoadGameSession(sessionID string) *GameSession {
 	db := dynamo.New(session.New(), &aws.Config{Region:aws.String("us-east-1", )})
-	table := db.Table(SessionTableName)
+	table := db.Table(conf.SessionTable.TableName)
 
 	var result *GameSession
-	err := table.Get(SessionTableHashKey, sessionID).One(&result)
+	err := table.Get(conf.SessionTable.HashKey, sessionID).One(&result)
 
 	if err != nil {
 		panic(err) // No point
@@ -54,7 +59,7 @@ func (gs *GameSession) NewStrippedSession() *StrippedGameSession{
 
 func (gs *GameSession) save () error {
 	db := dynamo.New(session.New(), &aws.Config{Region:aws.String("us-east-1", )})
-	table := db.Table(SessionTableName)
+	table := db.Table(conf.SessionTable.TableName)
 
 	err := table.Put(gs).Run()
 

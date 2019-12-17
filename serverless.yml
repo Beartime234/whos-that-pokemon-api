@@ -78,13 +78,13 @@ package:
 
 functions:
   api:
-    handler: bin/api
+    handler: bin/start
     timeout: 10
     memorySize: 1024
     description: Whos that Pokemon API
     events:
       - http:
-          path: wtp/start
+          path: wtp/api
           method: post
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
