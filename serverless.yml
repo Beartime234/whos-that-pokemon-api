@@ -166,4 +166,5 @@ resources:
      Description: "RestAPIId"
      Value:
        Ref: ApiGatewayRestApi
-     Export: ${opt:stage}-${self:service}-api-id
+     Export:
+        Name: ${opt:stage}-${self:service}-api-id
