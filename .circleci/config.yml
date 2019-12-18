@@ -1,4 +1,6 @@
 version: 2 # use CircleCI 2.0
+orbs:
+  aws-cli: circleci/aws-cli@0.1.18
 jobs: # basic units of work in a run
   build: # runs not using Workflows must have a `build` job as entry point
     docker: # run the steps with Docker
