@@ -34,6 +34,7 @@ func NewGameSession() (*GameSession, error) {
 		StartTime:      time.Now(),
 		CurrentPokemon: newPokemon(),
 		ExpirationTime: time.Now().Add(time.Hour * 6),  // Create a expiration time for this item.
+		Score:0,
 	}
 	err := newSession.save()
 	if err != nil {
