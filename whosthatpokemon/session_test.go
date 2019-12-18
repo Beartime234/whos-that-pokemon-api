@@ -66,12 +66,20 @@ func TestGameSession_Check(t *testing.T) {
 	}
 	firstPokemon :=  session.CurrentPokemon.Name
 
-	err = session.CheckAnswer("bleh")
+	wasCorrect, err := session.CheckAnswer("bleh")
+	if wasCorrect == true {
+		log.Printf("Was wrong but returned true")
+		t.Fail()
+	}
 	if firstPokemon != session.CurrentPokemon.Name {
 		log.Printf("The answer was wrong and a new pokemon was set")
 		t.Fail()
 	}
-	err = session.CheckAnswer(firstPokemon)
+	wasCorrect, err = session.CheckAnswer(firstPokemon)
+	if wasCorrect == false {
+		log.Printf("Was correct but returned false")
+		t.Fail()
+	}
 	if firstPokemon == session.CurrentPokemon.Name {
 		log.Printf("The answer was correct and a new pokemon wasn't set")
 		t.Fail()
