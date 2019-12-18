@@ -6,6 +6,7 @@ import (
 )
 
 type Config struct {
+	MaxPokemon int
 	GalleryTable DynamoTableConfig
 	SessionTable DynamoTableConfig
 }
@@ -18,18 +19,19 @@ type DynamoTableConfig struct {
 // New returns a new Config struct
 func New() *Config {
 	return &Config{
+		MaxPokemon: 807,
 		GalleryTable: DynamoTableConfig{
 			TableName: getEnv("GALLERY_TABLE_NAME"),
-			HashKey: "PokedexID",
+			HashKey:   "PokedexID",
 		},
-		SessionTable:DynamoTableConfig{
+		SessionTable: DynamoTableConfig{
 			TableName: getEnv("SESSION_TABLE_NAME"),
 			HashKey:   "SessionID",
 		},
 	}
 }
 
-// Simple helper function to read an environment or return a default value
+// Simple helper function to read an environment or panic with a good error message
 func getEnv(key string) string {
 	if value, exists := os.LookupEnv(key); exists {
 		return value

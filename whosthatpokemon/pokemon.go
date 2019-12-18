@@ -10,8 +10,6 @@ import (
 	"time"
 )
 
-const MaxPokemon = 807
-
 var conf = config.New()
 
 type Pokemon struct {
@@ -48,7 +46,7 @@ func GetRandomPokemon() *Pokemon {
 //GenerateRandomPokedexID Generates a random pokedex id
 func GenerateRandomPokedexID() int {
 	rand.Seed(time.Now().UnixNano()) // Generate a seed so it's random every time we call this
-	randomNumber := rand.Intn(MaxPokemon) + 1
+	randomNumber := rand.Intn(conf.MaxPokemon) + 1
 	log.Printf("Pokemon SessionID: %d", randomNumber)
 	return randomNumber
 }
