@@ -5,6 +5,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/google/uuid"
 	"github.com/guregu/dynamo"
+	"strings"
 	"time"
 )
 
@@ -26,7 +27,7 @@ func NewGameSession() (*GameSession, error) {
 	newSession := &GameSession{
 		SessionID:      id.String(),
 		StartTime:      time.Now(),
-		CurrentPokemon: NewPokemon(),
+		CurrentPokemon: newPokemon(),
 		ExpirationTime: time.Now().Add(time.Hour * 6),  // Create a expiration time for this item.
 	}
 	err := newSession.save()
@@ -70,9 +71,9 @@ func (gs *GameSession) save () error {
 	return nil
 }
 
-func (gs *GameSession) NewPokemon () error {
+func (gs *GameSession) newPokemon() error {
 	// TODO unexport this and make it so that its part of the check function
-	gs.CurrentPokemon = NewPokemon() // Get a new pokemon
+	gs.CurrentPokemon = newPokemon() // Get a new pokemon
 	err := gs.save()
 	if err != nil {
 		return err
@@ -80,7 +81,12 @@ func (gs *GameSession) NewPokemon () error {
 	return nil
 }
 
-func (gs *GameSession) Check () error {
-	// TODO implement
+func (gs *GameSession) CheckAnswer(answer string) error {
+	if strings.ToLower(answer) == gs.CurrentPokemon.Name {  // Check if their answer is the same as the current pokemon
+		err := gs.newPokemon()
+		if err != nil {
+			return err
+		}
+	}
 	return nil
 }

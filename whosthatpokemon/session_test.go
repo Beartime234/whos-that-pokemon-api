@@ -43,22 +43,37 @@ func TestGameSession_save(t *testing.T) {
 	}
 }
 
-func TestGameSession_NewPokemon(t *testing.T) {
+func TestGameSession_newPokemon(t *testing.T) {
 	session, err := NewGameSession()
 	if err != nil {
 		log.Fatal("Failed creating new session not saving")
 	}
 	firstPokemon :=  session.CurrentPokemon.Name
-	err = session.NewPokemon()
+	err = session.newPokemon()
 	if err != nil {
 		panic(err)
 	}
 	if firstPokemon == session.CurrentPokemon.Name {
-		log.Printf("A new pokemon was not generated")
+		log.Printf("A new pokemon was not set")
 		t.Fail()
 	}
 }
 
 func TestGameSession_Check(t *testing.T) {
-	t.Skip() // TODO implement
+	session, err := NewGameSession()
+	if err != nil {
+		log.Fatal("Failed creating new session not saving")
+	}
+	firstPokemon :=  session.CurrentPokemon.Name
+
+	err = session.CheckAnswer("bleh")
+	if firstPokemon != session.CurrentPokemon.Name {
+		log.Printf("The answer was wrong and a new pokemon was set")
+		t.Fail()
+	}
+	err = session.CheckAnswer(firstPokemon)
+	if firstPokemon == session.CurrentPokemon.Name {
+		log.Printf("The answer was correct and a new pokemon wasn't set")
+		t.Fail()
+	}
 }

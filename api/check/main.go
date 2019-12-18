@@ -31,13 +31,17 @@ func Handler(ctx context.Context, request Request) (Response, error) {
 	var requestBody *RequestBody  // Unmarshal the body of the request
 	err := json.Unmarshal([]byte(request.Body), &requestBody)
 
-	session, err := whosthatpokemon.LoadGameSession(requestBody.SessionID)  // Create a new session
+	session, err := whosthatpokemon.LoadGameSession(requestBody.SessionID)  // Load the new session
 
 	if err != nil {
 		return Response{StatusCode: 404}, err
 	}
 
-	_ = session.NewPokemon()  // TODO handle the error
+	err = session.CheckAnswer(requestBody.PokemonNameGuess)
+
+	if err != nil {
+		return Response{StatusCode: 404}, err
+	}
 
 	body, err := json.Marshal(session.NewStrippedSession())
 

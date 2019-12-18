@@ -53,7 +53,7 @@ func GenerateRandomPokedexID() int {
 	return randomNumber
 }
 
-func NewPokemon() *Pokemon {
+func newPokemon() *Pokemon {
 	return GetRandomPokemon()
 }
 
