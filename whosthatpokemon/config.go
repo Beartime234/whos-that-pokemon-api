@@ -1,9 +1,11 @@
-package config
+package whosthatpokemon
 
 import (
 	"log"
 	"os"
 )
+
+var conf = New()
 
 type Config struct {
 	MaxPokemon int
