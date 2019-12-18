@@ -23,6 +23,7 @@ Parameters:
   ApiDomainCertificate:
     Description: The certificate arn for the domain that are you using
     Type: String
+    Default: arn:aws:acm:us-east-1:934679804324:certificate/e9d4580c-1ff4-4836-9a7e-9a9e532be2e6
 
 Resources:
   ApiGatewayCustomDomainName:
@@ -45,7 +46,7 @@ Resources:
         Fn::Sub: api.${ApiDomain}
       RestApiId:
         Fn::ImportValue:
-          Fn::Sub: ${Stage}-${ServiceName}-api
+          Fn::Sub: ${Stage}-${ServiceName}-api-id
       Stage:
         Fn::Sub: ${Stage}
   CustomDomainRecord:
