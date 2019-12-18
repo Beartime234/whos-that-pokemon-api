@@ -161,12 +161,10 @@ resources:
         TimeToLiveSpecification:
           AttributeName: ExpirationTime
           Enabled: True
-#  Resources:
-#    NewResource:
-#      Type: AWS::S3::Bucket
-#      Properties:
-#        BucketName: my-new-bucket
-#  Outputs:
-#     NewOutput:
-#       Description: "Description for the output"
-#       Value: "Some output value"
+  Outputs:
+    ApiId:
+     Description: "RestAPIId"
+     Value:
+       Ref: ApiGatewayRestApi
+      Export:
+        ${opt:stage}-${self:service}-api-id
