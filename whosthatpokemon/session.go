@@ -13,12 +13,14 @@ type GameSession struct {
 	SessionID      string    // The id for the session. Should be a randomly generated UUID
  	StartTime      time.Time // When the player started the game
  	CurrentPokemon *Pokemon  // The users Current Pokemon
+ 	Score int // The users current score for this session
 	ExpirationTime time.Time // When this is removed from the session database
 }
 
 type StrippedGameSession struct {
 	SessionID string
 	CurrentPokemon *StrippedPokemon
+	Score int
 }
 
 //NewGameSession Creates a new Game Session
@@ -55,6 +57,7 @@ func (gs *GameSession) NewStrippedSession() *StrippedGameSession{
 	return &StrippedGameSession{
 		SessionID:      gs.SessionID,
 		CurrentPokemon: gs.CurrentPokemon.NewStrippedPokemon(),
+		Score: gs.Score,
 	}
 }
 
@@ -72,7 +75,6 @@ func (gs *GameSession) save () error {
 }
 
 func (gs *GameSession) newPokemon() error {
-	// TODO unexport this and make it so that its part of the check function
 	gs.CurrentPokemon = newPokemon() // Get a new pokemon
 	err := gs.save()
 	if err != nil {
@@ -81,12 +83,20 @@ func (gs *GameSession) newPokemon() error {
 	return nil
 }
 
-func (gs *GameSession) CheckAnswer(answer string) error {
+func (gs *GameSession) CheckAnswer(answer string) (bool, error) {
 	if strings.ToLower(answer) == gs.CurrentPokemon.Name {  // Check if their answer is the same as the current pokemon
+		gs.incrementScore()
 		err := gs.newPokemon()
 		if err != nil {
-			return err
+			return false, err
 		}
+		return true, nil
 	}
-	return nil
+	return false, nil
+}
+
+// GameSession_incrementScore increments the score for a user
+func (gs *GameSession) incrementScore() {
+	gs.Score += 1
+	return
 }

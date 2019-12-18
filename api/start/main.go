@@ -7,6 +7,7 @@ import (
 	"github.com/Beartime234/whos-that-pokemon/whosthatpokemon"
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
+	"log"
 )
 
 // Response is of type APIGatewayProxyResponse since we're leveraging the
@@ -14,14 +15,25 @@ import (
 //
 // https://serverless.com/framework/docs/providers/aws/events/apigateway/#lambda-proxy-integration
 type Response events.APIGatewayProxyResponse
+type Request events.APIGatewayProxyRequest
 
-type Request struct {
+type RequestBody struct {
 
+}
+
+type StartResponseBody struct {
+	Session *whosthatpokemon.GameSession
+}
+
+func NewStartResponseBody(session *whosthatpokemon.GameSession) *StartResponseBody {
+	return &StartResponseBody{Session: session}
 }
 
 // Handler is our lambda handler invoked by the `lambda.Start` function call
 func Handler(ctx context.Context, request *Request) (Response, error) {
 	var buf bytes.Buffer
+
+	log.Printf("Request: %+v", request)
 
 	session, err := whosthatpokemon.NewGameSession()  // Create a new session
 
@@ -29,7 +41,7 @@ func Handler(ctx context.Context, request *Request) (Response, error) {
 		return Response{StatusCode: 404}, err
 	}
 
-	body, err := json.Marshal(session.NewStrippedSession())
+	body, err := json.Marshal(NewStartResponseBody(session))
 
 	if err != nil {
 		return Response{StatusCode: 404}, err

@@ -17,9 +17,18 @@ import (
 type Response events.APIGatewayProxyResponse
 type Request events.APIGatewayProxyRequest
 
-type RequestBody struct {
+type CheckRequestBody struct {
 	SessionID string  `json:"SessionID"`
 	PokemonNameGuess string `json:"PokemonNameGuess"`
+}
+
+type CheckResponseBody struct {
+	Session *whosthatpokemon.StrippedGameSession
+	Correct bool  // If they are correct
+}
+
+func NewCheckResponseBody(session *whosthatpokemon.StrippedGameSession, correct bool) *CheckResponseBody {
+	return &CheckResponseBody{Session: session, Correct: correct}
 }
 
 // Handler is our lambda handler invoked by the `lambda.Start` function call
@@ -28,7 +37,7 @@ func Handler(ctx context.Context, request Request) (Response, error) {
 
 	log.Printf("Request: %+v", request)
 
-	var requestBody *RequestBody  // Unmarshal the body of the request
+	var requestBody *CheckRequestBody // Unmarshal the body of the request
 	err := json.Unmarshal([]byte(request.Body), &requestBody)
 
 	session, err := whosthatpokemon.LoadGameSession(requestBody.SessionID)  // Load the new session
@@ -37,13 +46,13 @@ func Handler(ctx context.Context, request Request) (Response, error) {
 		return Response{StatusCode: 404}, err
 	}
 
-	err = session.CheckAnswer(requestBody.PokemonNameGuess)
+	wasCorrect, err := session.CheckAnswer(requestBody.PokemonNameGuess)
 
 	if err != nil {
 		return Response{StatusCode: 404}, err
 	}
 
-	body, err := json.Marshal(session.NewStrippedSession())
+	body, err := json.Marshal(NewCheckResponseBody(session.NewStrippedSession(), wasCorrect))
 
 	if err != nil {
 		return Response{StatusCode: 404}, err

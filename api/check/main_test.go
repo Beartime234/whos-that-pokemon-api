@@ -13,7 +13,7 @@ func TestHandler(t *testing.T) {
 	if err != nil {
 		log.Fatal("Error in creating game session.")
 	}
-	requestBody, err := json.Marshal(RequestBody{
+	requestBody, err := json.Marshal(CheckRequestBody{
 		SessionID:        session.SessionID,
 		PokemonNameGuess: session.CurrentPokemon.Name,
 	})
