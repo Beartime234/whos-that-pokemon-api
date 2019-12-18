@@ -27,8 +27,8 @@ type CheckResponseBody struct {
 	Correct bool  // If they are correct
 }
 
-func NewCheckResponseBody(session *whosthatpokemon.StrippedGameSession, correct bool) *CheckResponseBody {
-	return &CheckResponseBody{Session: session, Correct: correct}
+func NewCheckResponseBody(session *whosthatpokemon.GameSession, correct bool) *CheckResponseBody {
+	return &CheckResponseBody{Session: session.NewStrippedSession(), Correct: correct}
 }
 
 // Handler is our lambda handler invoked by the `lambda.Start` function call
@@ -52,7 +52,7 @@ func Handler(ctx context.Context, request Request) (Response, error) {
 		return Response{StatusCode: 404}, err
 	}
 
-	body, err := json.Marshal(NewCheckResponseBody(session.NewStrippedSession(), wasCorrect))
+	body, err := json.Marshal(NewCheckResponseBody(session, wasCorrect))
 
 	if err != nil {
 		return Response{StatusCode: 404}, err

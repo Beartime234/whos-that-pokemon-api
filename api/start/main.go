@@ -22,11 +22,11 @@ type RequestBody struct {
 }
 
 type StartResponseBody struct {
-	Session *whosthatpokemon.GameSession
+	Session *whosthatpokemon.StrippedGameSession
 }
 
 func NewStartResponseBody(session *whosthatpokemon.GameSession) *StartResponseBody {
-	return &StartResponseBody{Session: session}
+	return &StartResponseBody{Session: session.NewStrippedSession()}
 }
 
 // Handler is our lambda handler invoked by the `lambda.Start` function call
