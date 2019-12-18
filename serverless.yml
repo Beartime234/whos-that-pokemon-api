@@ -11,12 +11,20 @@ frameworkVersion: '>=1.28.0 <2.0.0'
 custom:
   GalleryTableName: PokemonGalleryTable
   SessionTableName: WhosThatPokemonSessionTable-${opt:stage}
+  customDomain:
+    domainName: whosthatpokemon.xyz
+    basePath: api
+    stage: ${self:provider.stage}
+    createRoute53Record: true
+    certificateArn: arn:aws:acm:us-east-1:934679804324:certificate/e9d4580c-1ff4-4836-9a7e-9a9e532be2e6
+    endpointType: regional
 
 provider:
   name: aws
   runtime: go1.x
   stage: ${opt:stage}
   region: us-east-1
+  endpointType: REGIONAL
 
 # you can overwrite defaults here
 #  stage: dev
