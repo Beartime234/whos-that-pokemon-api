@@ -84,7 +84,8 @@ functions:
     description: Whos that Pokemon API. Start function.
     events:
       - http:
-          path: wtp/start
+          cors: true
+          path: start
           method: post
   check:
     handler: bin/check
@@ -93,8 +94,9 @@ functions:
     description: Whos that Pokemon API. Check function.
     events:
       - http:
-          path: wtp/check
+          path: check
           method: post
+          cors: true
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details
