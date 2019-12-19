@@ -1,7 +1,6 @@
 package whosthatpokemon
 
 import (
-	"github.com/Beartime234/whos-that-pokemon/whosthatpokemon/config"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/guregu/dynamo"
@@ -10,10 +9,8 @@ import (
 	"time"
 )
 
-const MaxPokemon = 807
 
-var conf = config.New()
-
+// Pokemon Details about a Pokemon
 type Pokemon struct {
 	PokedexID int `dynamo:"PokedexID"`
 	Name string `dynamo:"Name"`
@@ -48,15 +45,17 @@ func GetRandomPokemon() *Pokemon {
 //GenerateRandomPokedexID Generates a random pokedex id
 func GenerateRandomPokedexID() int {
 	rand.Seed(time.Now().UnixNano()) // Generate a seed so it's random every time we call this
-	randomNumber := rand.Intn(MaxPokemon) + 1
+	randomNumber := rand.Intn(conf.MaxPokemon) + 1
 	log.Printf("Pokemon SessionID: %d", randomNumber)
 	return randomNumber
 }
 
+// newPokemon Gets you a new pokemon picked randomly
 func newPokemon() *Pokemon {
 	return GetRandomPokemon()
 }
 
+// Pokemon_NewStrippedPokemon The information of a pokemon that can be shared to the user
 func (poke *Pokemon) NewStrippedPokemon() *StrippedPokemon {
 	return &StrippedPokemon{BWImageUrl:poke.BWImageUrl}
 }

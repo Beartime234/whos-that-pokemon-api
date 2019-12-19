@@ -22,3 +22,6 @@ vendor
 
 # GoLand
 .idea
+
+# Node modules
+node_modules

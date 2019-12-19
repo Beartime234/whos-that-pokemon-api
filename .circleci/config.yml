@@ -1,4 +1,6 @@
-version: 2 # use CircleCI 2.0
+version: 2.1
+orbs:
+  aws-cli: circleci/aws-cli@0.1.18
 jobs: # basic units of work in a run
   build: # runs not using Workflows must have a `build` job as entry point
     docker: # run the steps with Docker
@@ -155,6 +157,12 @@ jobs: # basic units of work in a run
       - run:
           name: Deploy application
           command: sls deploy -s prod
+  deploy_domain:
+    executor: aws-cli/default
+    steps:
+      - checkout
+      - aws-cli/setup
+      - run: aws cloudformation deploy --template-file domain-template.yml --stack-name whos-that-pokemon-api-domain --no-fail-on-empty-changeset
 workflows:
   version: 2
   full_run:
@@ -169,6 +177,12 @@ workflows:
       - deploy_prod:
           requires:
             - test
+          filters:
+            branches:
+              only: master
+      - deploy_domain:
+          requires:
+            - deploy_prod
           filters:
             branches:
               only: master

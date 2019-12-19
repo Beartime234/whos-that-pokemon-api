@@ -9,7 +9,7 @@ func TestGenerateRandomPokedexID(t *testing.T) {
 	var genTimes = 100000
 	for i := 1;  i<=genTimes; i++ {
 		got := GenerateRandomPokedexID()
-		if got < 1 && got > MaxPokemon {
+		if got < 1 && got > conf.MaxPokemon {
 			t.Fail()
 		}
 	}
