@@ -69,18 +69,21 @@ func (gs *GameSession) NewStrippedSession() *StrippedGameSession{
 
 // This function checks if the answer
 func (gs *GameSession) CheckAnswer(answer string) (bool, error) {
-	if strings.ToLower(answer) == gs.CurrentPokemon.Name {  // Check if their answer is the same as the current pokemon
+	lowercaseAnswer := strings.ToLower(answer)
+	if lowercaseAnswer == gs.CurrentPokemon.Name {  // Check if their answer is the same as the current pokemon
 		// They were correct
-		gs.incrementScore() // Increment the score
-		err := gs.newPokemon()  // Generate a new pokemon
-		if err != nil {
-			return false, err
-		}
-		err = gs.save() // Save the new pokemon
+		err := gs.correct()
 		if err != nil {
 			return false, err
 		}
 		return true, nil
+	}
+	if lowercaseAnswer == "skip" {
+		err := gs.skip()
+		if err != nil {
+			return false, err
+		}
+		return false, nil
 	}
 	return false, nil
 }
@@ -107,10 +110,44 @@ func (gs *GameSession) newPokemon() error {
 	return nil
 }
 
+func (gs *GameSession) correct() error {
+	gs.incrementScore()    // Increment the score
+	err := gs.newPokemon() // Generate a new pokemon
+	if err != nil {
+		return err
+	}
+	err = gs.save() // Save the new pokemon
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// GameSession_skip skips the current pokemon
+func (gs *GameSession) skip() error {
+	gs.decrementScore()  // Decrement the score
+	err := gs.newPokemon()  // Generate a new pokemon
+	if err != nil {
+		return err
+	}
+	err = gs.save() // Save the new pokemon
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 
 // GameSession_incrementScore increments the score for the session
 // NOTE: You would need to still save this
 func (gs *GameSession) incrementScore() {
 	gs.Score += 1
+	return
+}
+
+// GameSession_decrementScore it decrements the score if the user has to skip it
+// NOTE: You would need to still save this
+func (gs *GameSession) decrementScore() {
+	gs.Score -= 1
 	return
 }
