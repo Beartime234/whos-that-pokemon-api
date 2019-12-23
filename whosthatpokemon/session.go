@@ -158,6 +158,9 @@ func (gs *GameSession) incrementScore() {
 // GameSession_decrementScore it decrements the score if the user has to skip it
 // NOTE: You would need to still save this
 func (gs *GameSession) decrementScore() {
+	if gs.Score == 0 {  // We don't want it to go below 0
+		return
+	}
 	gs.Score -= 1
 	return
 }
