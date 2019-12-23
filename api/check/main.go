@@ -32,6 +32,7 @@ func NewCheckResponseBody(session *whosthatpokemon.GameSession, correct bool) *C
 }
 
 // Handler is our lambda handler invoked by the `lambda.Start` function call
+// The steps pretty much go, Find the session, Check the answer and return the response
 func Handler(ctx context.Context, request Request) (Response, error) {
 	var buf bytes.Buffer
 
