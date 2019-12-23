@@ -14,6 +14,8 @@ type GameSession struct {
 	SessionID      string    // The id for the session. Should be a randomly generated UUID
  	StartTime      time.Time // When the player started the game
  	CurrentPokemon *Pokemon  // The users Current Pokemon
+ 	NextPokemon *Pokemon // The next pokemon
+ 	PreviousPokemon *Pokemon  // The previous pokemon
  	Score int // The users current score for this session
 	ExpirationTime time.Time // When this is removed from the session database
 }
@@ -22,7 +24,9 @@ type GameSession struct {
 // name and other things that give away the answer.
 type StrippedGameSession struct {
 	SessionID string
+	PreviousPokemon *Pokemon
 	CurrentPokemon *StrippedPokemon
+	NextPokemon *StrippedPokemon
 	Score int
 }
 
@@ -32,7 +36,9 @@ func NewGameSession() (*GameSession, error) {
 	newSession := &GameSession{
 		SessionID:      id.String(),
 		StartTime:      time.Now(),
+		PreviousPokemon:nil,
 		CurrentPokemon: newPokemon(),
+		NextPokemon:newPokemon(),
 		ExpirationTime: time.Now().Add(time.Hour * 6),  // Create a expiration time for this item.
 		Score:0,
 	}
@@ -62,7 +68,9 @@ func LoadGameSession(sessionID string) (*GameSession, error) {
 func (gs *GameSession) NewStrippedSession() *StrippedGameSession{
 	return &StrippedGameSession{
 		SessionID:      gs.SessionID,
+		NextPokemon: gs.NextPokemon.NewStrippedPokemon(),
 		CurrentPokemon: gs.CurrentPokemon.NewStrippedPokemon(),
+		PreviousPokemon: gs.PreviousPokemon,
 		Score: gs.Score,
 	}
 }
@@ -106,7 +114,9 @@ func (gs *GameSession) save () error {
 // GameSession_newPokemon Generates a new pokemon for the current session
 // NOTE: You would still need to save this
 func (gs *GameSession) newPokemon() error {
-	gs.CurrentPokemon = newPokemon() // Get a new pokemon
+	gs.PreviousPokemon = gs.CurrentPokemon  // Set the previous as next
+	gs.CurrentPokemon = gs.NextPokemon  // Set the current as next
+	gs.NextPokemon = newPokemon() // Get a new pokemon
 	return nil
 }
 
