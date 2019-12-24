@@ -11,9 +11,11 @@ import (
 
 // GameSession this is the object that controls the flow of the game
 type GameSession struct {
-	SessionID      string    // The id for the session. Should be a randomly generated UUID
- 	StartTime      time.Time // When the player started the game
- 	CurrentPokemon *Pokemon  // The users Current Pokemon
+	SessionID      	string    // The id for the session. Should be a randomly generated UUID
+ 	StartTime      	time.Time // When the player started the game
+ 	CurrentPokemon 	*Pokemon  // The users Current Pokemon
+ 	NextPokemon	   	*Pokemon
+	PreviousPokemon *Pokemon
  	Score int // The users current score for this session
 	ExpirationTime time.Time // When this is removed from the session database
 }
@@ -23,6 +25,8 @@ type GameSession struct {
 type StrippedGameSession struct {
 	SessionID string
 	CurrentPokemon *StrippedPokemon
+	NextPokemon *StrippedPokemon
+	PreviousPokemon *StrippedPokemon
 	Score int
 }
 
