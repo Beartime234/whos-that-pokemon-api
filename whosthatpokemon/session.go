@@ -11,11 +11,11 @@ import (
 
 // GameSession this is the object that controls the flow of the game
 type GameSession struct {
-	SessionID      	string    // The id for the session. Should be a randomly generated UUID
- 	StartTime      	time.Time // When the player started the game
- 	CurrentPokemon 	*Pokemon  // The users Current Pokemon
- 	NextPokemon	   	*Pokemon
-	PreviousPokemon *Pokemon
+	SessionID      string    // The id for the session. Should be a randomly generated UUID
+ 	StartTime      time.Time // When the player started the game
+ 	CurrentPokemon *Pokemon  // The users Current Pokemon
+ 	NextPokemon *Pokemon // The next pokemon
+ 	PreviousPokemon *Pokemon  // The previous pokemon
  	Score int // The users current score for this session
 	ExpirationTime time.Time // When this is removed from the session database
 }
@@ -24,9 +24,9 @@ type GameSession struct {
 // name and other things that give away the answer.
 type StrippedGameSession struct {
 	SessionID string
+	PreviousPokemon *Pokemon
 	CurrentPokemon *StrippedPokemon
 	NextPokemon *StrippedPokemon
-	PreviousPokemon *StrippedPokemon
 	Score int
 }
 
@@ -36,7 +36,9 @@ func NewGameSession() (*GameSession, error) {
 	newSession := &GameSession{
 		SessionID:      id.String(),
 		StartTime:      time.Now(),
+		PreviousPokemon:nil,
 		CurrentPokemon: newPokemon(),
+		NextPokemon:newPokemon(),
 		ExpirationTime: time.Now().Add(time.Hour * 6),  // Create a expiration time for this item.
 		Score:0,
 	}
@@ -66,7 +68,9 @@ func LoadGameSession(sessionID string) (*GameSession, error) {
 func (gs *GameSession) NewStrippedSession() *StrippedGameSession{
 	return &StrippedGameSession{
 		SessionID:      gs.SessionID,
+		NextPokemon: gs.NextPokemon.NewStrippedPokemon(),
 		CurrentPokemon: gs.CurrentPokemon.NewStrippedPokemon(),
+		PreviousPokemon: gs.PreviousPokemon,
 		Score: gs.Score,
 	}
 }
@@ -110,7 +114,9 @@ func (gs *GameSession) save () error {
 // GameSession_newPokemon Generates a new pokemon for the current session
 // NOTE: You would still need to save this
 func (gs *GameSession) newPokemon() error {
-	gs.CurrentPokemon = newPokemon() // Get a new pokemon
+	gs.PreviousPokemon = gs.CurrentPokemon  // Set the previous as next
+	gs.CurrentPokemon = gs.NextPokemon  // Set the current as next
+	gs.NextPokemon = newPokemon() // Get a new pokemon
 	return nil
 }
 
@@ -152,6 +158,9 @@ func (gs *GameSession) incrementScore() {
 // GameSession_decrementScore it decrements the score if the user has to skip it
 // NOTE: You would need to still save this
 func (gs *GameSession) decrementScore() {
+	if gs.Score == 0 {  // We don't want it to go below 0
+		return
+	}
 	gs.Score -= 1
 	return
 }
