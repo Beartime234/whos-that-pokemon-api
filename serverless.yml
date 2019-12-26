@@ -155,23 +155,11 @@ resources:
         AttributeDefinitions:
           - AttributeName: "SessionID"
             AttributeType: "S"
-          - AttributeName: "Score"
-            AttributeType: "N"
         KeySchema:
           - AttributeName: "SessionID"
             KeyType: "HASH"
         BillingMode: "PAY_PER_REQUEST"
-        GlobalSecondaryIndexes:
-          - IndexName: Score-Index
-            KeySchema:
-              - AttributeName: Score
-                KeyType: HASH
-            Projection:
-              NonKeyAttributes: []
-              ProjectionType: ALL
-            ProvisionedThroughput:
-              ReadCapacityUnits: 0
-              WriteCapacityUnits: 0
+        # Guide for this design https://forums.aws.amazon.com/thread.jspa?threadID=119286
         TableName: ${self:custom.SessionTableName}
         TimeToLiveSpecification:
           AttributeName: ExpirationTime
