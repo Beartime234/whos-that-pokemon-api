@@ -8,9 +8,10 @@ import (
 var conf = New()
 
 type Config struct {
-	MaxPokemon int
-	GalleryTable DynamoTableConfig
-	SessionTable DynamoTableConfig
+	MaxPokemon          int
+	CorrectnessRequired int
+	GalleryTable        DynamoTableConfig
+	SessionTable        DynamoTableConfig
 }
 
 type DynamoTableConfig struct {
@@ -21,7 +22,8 @@ type DynamoTableConfig struct {
 // New returns a new Config struct
 func New() *Config {
 	return &Config{
-		MaxPokemon: 807,
+		MaxPokemon:          807,
+		CorrectnessRequired: 2,
 		GalleryTable: DynamoTableConfig{
 			TableName: getEnv("GALLERY_TABLE_NAME"),
 			HashKey:   "PokedexID",

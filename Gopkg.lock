@@ -2,6 +2,14 @@
 
 
 [[projects]]
+  digest = "1:a0476e860aa63a6901467374135c26fd09e00142d46582afc8f88a97db4beb1f"
+  name = "github.com/agnivade/levenshtein"
+  packages = ["."]
+  pruneopts = ""
+  revision = "5f1ee18e3efadffd18ef076ac4181cc92d87188c"
+  version = "v1.0.3"
+
+[[projects]]
   digest = "1:d37b5cbae31a6d3685931cdb7d355e650a5dcb265dc340b57b6f17158234bd38"
   name = "github.com/aws/aws-lambda-go"
   packages = [
@@ -115,6 +123,7 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
+    "github.com/agnivade/levenshtein",
     "github.com/aws/aws-lambda-go/events",
     "github.com/aws/aws-lambda-go/lambda",
     "github.com/aws/aws-sdk-go/aws",

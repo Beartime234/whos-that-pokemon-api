@@ -85,3 +85,53 @@ func TestGameSession_Check(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func TestGameSession_CheckAnswer(t *testing.T) {
+	session, err := NewGameSession()
+	if err != nil {
+		log.Fatal("Failed creating new session not CheckAnswer")
+	}
+	correct, err := session.CheckAnswer(session.CurrentPokemon.Name)
+	if correct != true {
+		t.Fail()
+	}
+
+	session.CurrentPokemon.Name = "bulbasaur"
+	correct, err = session.CheckAnswer("bulbasaurr")
+	if correct != true {
+		t.Fail()
+	}
+}
+
+func TestGameSession_isGuessCorrect(t *testing.T) {
+	session, err := NewGameSession()
+	if err != nil {
+		log.Fatal("Failed creating new session not isGuessCorrect")
+	}
+
+	// Check that if your correct your correct
+	session.CurrentPokemon.Name = "bulbasaur"
+	correct, err := session.CheckAnswer(session.CurrentPokemon.Name)
+	if correct == false {
+		log.Printf("The answer was correct but was said to be wrong")
+		t.Fail()
+	}
+
+	// Check that if your wrong your wrong
+	session.CurrentPokemon.Name = "bulbasaur"
+	correct, err = session.CheckAnswer("dog")
+	if correct == true {
+		log.Printf("The answer was wrong but was said to be correct")
+		t.Fail()
+	}
+
+	// Check that if your close
+	session.CurrentPokemon.Name = "bulbasaur"
+	correct, err = session.CheckAnswer("bulbasaurr")
+	if correct == false {
+		log.Printf("The answer was close enough but was marked incorrect")
+		t.Fail()
+	}
+
+
+}

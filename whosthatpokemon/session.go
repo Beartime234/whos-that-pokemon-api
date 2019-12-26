@@ -1,6 +1,7 @@
 package whosthatpokemon
 
 import (
+	"github.com/agnivade/levenshtein"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/google/uuid"
@@ -78,7 +79,7 @@ func (gs *GameSession) NewStrippedSession() *StrippedGameSession{
 // This function checks if the answer
 func (gs *GameSession) CheckAnswer(answer string) (bool, error) {
 	lowercaseAnswer := strings.ToLower(answer)
-	if lowercaseAnswer == gs.CurrentPokemon.Name {  // Check if their answer is the same as the current pokemon
+	if gs.isGuessCorrect(lowercaseAnswer){  // Check if their answer is the same as the current pokemon
 		// They were correct
 		err := gs.correct()
 		if err != nil {
@@ -163,4 +164,13 @@ func (gs *GameSession) decrementScore() {
 	}
 	gs.Score -= 1
 	return
+}
+
+func (gs *GameSession) isGuessCorrect(guess string) bool {
+	lowercaseGuess := strings.ToLower(guess)
+	guessCorrectness := levenshtein.ComputeDistance(lowercaseGuess, gs.CurrentPokemon.Name)
+	if guessCorrectness > conf.CorrectnessRequired {
+		return false
+	}
+	return true
 }
