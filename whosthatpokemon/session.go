@@ -6,42 +6,55 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/google/uuid"
 	"github.com/guregu/dynamo"
+	"log"
 	"strings"
 	"time"
 )
 
 // GameSession this is the object that controls the flow of the game
 type GameSession struct {
-	SessionID      string    // The id for the session. Should be a randomly generated UUID
- 	StartTime      time.Time // When the player started the game
- 	CurrentPokemon *Pokemon  // The users Current Pokemon
- 	NextPokemon *Pokemon // The next pokemon
- 	PreviousPokemon *Pokemon  // The previous pokemon
- 	Score int // The users current score for this session
-	ExpirationTime time.Time // When this is removed from the session database
+	SessionID            string    // The id for the session. Should be a randomly generated UUID
+	UserName			 string    // The users name for this session. Is sent to blank by default.
+	StartTime            time.Time // When the player started the game
+	CurrentPokemon       *Pokemon  // The users Current Pokemon
+	NextPokemon          *Pokemon  // The next pokemon
+	PreviousPokemon      *Pokemon  // The previous pokemon
+	Score                int       // The users current score for this session
+	ExpirationTime       time.Time // When this is removed from the session database
+	LeaderboardPartition string  // This is a randomized value of PARTITION_0, PARTITION_1, PARTITION_2
 }
 
 // StrippedGameSession this is what is sent back to the application. It is stripped so users cannot see the
 // name and other things that give away the answer.
 type StrippedGameSession struct {
 	SessionID string
+	UserName string
 	PreviousPokemon *Pokemon
 	CurrentPokemon *StrippedPokemon
 	NextPokemon *StrippedPokemon
 	Score int
 }
 
+// MaskedGameSession this is what is sent back to the application when you are sending to the users session.
+type MaskedGameSession struct {
+	UserName string
+	Score int
+}
+
 //NewGameSession Creates a new Game Session
 func NewGameSession() (*GameSession, error) {
 	id := uuid.New()
+	defaultUserName := generateDefaultUserName(id.String())
 	newSession := &GameSession{
 		SessionID:      id.String(),
+		UserName:		defaultUserName,
 		StartTime:      time.Now(),
 		PreviousPokemon:nil,
 		CurrentPokemon: newPokemon(),
 		NextPokemon:newPokemon(),
 		ExpirationTime: time.Now().Add(time.Hour * 6),  // Create a expiration time for this item.
 		Score:0,
+		LeaderboardPartition:partitionValue,
 	}
 	err := newSession.save()
 	if err != nil {
@@ -69,10 +82,19 @@ func LoadGameSession(sessionID string) (*GameSession, error) {
 func (gs *GameSession) NewStrippedSession() *StrippedGameSession{
 	return &StrippedGameSession{
 		SessionID:      gs.SessionID,
+		UserName:		gs.UserName,
 		NextPokemon: gs.NextPokemon.NewStrippedPokemon(),
 		CurrentPokemon: gs.CurrentPokemon.NewStrippedPokemon(),
 		PreviousPokemon: gs.PreviousPokemon,
 		Score: gs.Score,
+	}
+}
+
+// GameSession_NewMaskedSession creates a masked session that you can return to users who are not owners of the session'
+func (gs *GameSession) NewMaskedSession() *MaskedGameSession {
+	return &MaskedGameSession{
+		UserName:  gs.UserName,
+		Score:     gs.Score,
 	}
 }
 
@@ -166,6 +188,8 @@ func (gs *GameSession) decrementScore() {
 	return
 }
 
+// GameSession_isGuessCorrect checks if the guess is correct uses the levenshtien formula to allow you to be off
+// by a certain number of moves
 func (gs *GameSession) isGuessCorrect(guess string) bool {
 	lowercaseGuess := strings.ToLower(guess)
 	guessCorrectness := levenshtein.ComputeDistance(lowercaseGuess, gs.CurrentPokemon.Name)
@@ -173,4 +197,20 @@ func (gs *GameSession) isGuessCorrect(guess string) bool {
 		return false
 	}
 	return true
+}
+
+// GameSession_setUserName sets the username for the session
+func (gs *GameSession) SetUserName(userName string) error {
+	gs.UserName = userName
+	err := gs.save()
+	if err != nil {
+		return err
+	}
+	log.Printf("Set username to %s", userName)
+	return nil
+}
+
+// generateDefaultUserName generates the default username for a user
+func generateDefaultUserName(id string) string {
+	return "User-" + id[0:5]
 }
