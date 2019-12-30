@@ -132,6 +132,30 @@ func TestGameSession_isGuessCorrect(t *testing.T) {
 		log.Printf("The answer was close enough but was marked incorrect")
 		t.Fail()
 	}
+}
 
+func TestGameSession_SetUserName(t *testing.T) {
+	session, err := NewGameSession()
 
+	if err != nil {
+		log.Fatal("Failed creating new session not SetUserName")
+	}
+
+	err = session.SetUserName("CharmanderLover")
+
+	if err != nil {
+		log.Fatal("Failed setting new username")
+	}
+
+	if session.UserName != "CharmanderLover" {
+		log.Fatalf("Session username was %s wanted CharmanderLover", session.UserName)
+	}
+}
+
+func Test_generateDefaultUserName(t *testing.T) {
+	got := generateDefaultUserName("12345")
+	if got != "User-12345" {
+		log.Printf("Got %s wanted User-12345", got)
+		t.Fail()
+	}
 }

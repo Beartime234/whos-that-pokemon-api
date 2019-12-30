@@ -24,7 +24,7 @@
   version = "v1.13.3"
 
 [[projects]]
-  digest = "1:bd7b6da320d33aa191393ef47d8f8a86fb0ff9e9fca3bcf59ac16dad5f9110d2"
+  digest = "1:96dafb8bf6c23588e7351a4fe88e1648a67fb5c674b005b3221ec4d5463ca7a7"
   name = "github.com/aws/aws-sdk-go"
   packages = [
     "aws",
@@ -66,16 +66,16 @@
     "service/sts/stsiface",
   ]
   pruneopts = ""
-  revision = "547e50a7858bd6ad310bdf99cb5d40599dc350fc"
-  version = "v1.26.3"
+  revision = "fcbfc357f185c1d55e2c37626357ec92abd52286"
+  version = "v1.26.8"
 
 [[projects]]
-  digest = "1:f11885665d7cedde53a06ceca3cc1deb8b430c7d3030f42b12e6a7d59695c616"
+  digest = "1:ba918e64f703d44227140ddebf61366e43c6adf9e0aa41beb21ac6b22a07b892"
   name = "github.com/cenkalti/backoff"
   packages = ["."]
   pruneopts = ""
-  revision = "1ff1c09ea627d2be64cea605afa999c582c7cd01"
-  version = "v3.1.1"
+  revision = "a9a4cec6c9a26336ca42700ccc319ca842be56c0"
+  version = "v4.0.0"
 
 [[projects]]
   digest = "1:141cc9fc6279592458b304038bd16a05ef477d125c6dad281216345a11746fd7"

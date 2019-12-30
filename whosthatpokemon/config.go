@@ -17,7 +17,14 @@ type Config struct {
 type DynamoTableConfig struct {
 	TableName string
 	HashKey string
+	GlobalSecondaryIndex GlobalSecondaryIndexConfig
 }
+
+type GlobalSecondaryIndexConfig struct {
+	IndexName string
+	HashKey string
+	RangeKey string
+} 
 
 // New returns a new Config struct
 func New() *Config {
@@ -31,6 +38,11 @@ func New() *Config {
 		SessionTable: DynamoTableConfig{
 			TableName: getEnv("SESSION_TABLE_NAME"),
 			HashKey:   "SessionID",
+			GlobalSecondaryIndex:GlobalSecondaryIndexConfig{
+				IndexName: "Leaderboard-Index",
+				HashKey:  "LeaderboardPartition",
+				RangeKey: "Score",
+			},
 		},
 	}
 }

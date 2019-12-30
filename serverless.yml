@@ -105,6 +105,26 @@ functions:
           path: check
           method: post
           cors: true
+  name:
+    handler: bin/name
+    timeout: 10
+    memorySize: 1024
+    description: Whos that Pokemon API. Name function.
+    events:
+      - http:
+          path: name
+          method: post
+          cors: true
+  leaderboard:
+    handler: bin/leaderboard
+    timeout: 5
+    memorySize: 1024
+    description: Whos that Pokemon API. Leaderboard function.
+    events:
+      - http:
+          path: leaderboard
+          method: get
+          cors: true
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details
@@ -155,12 +175,29 @@ resources:
         AttributeDefinitions:
           - AttributeName: "SessionID"
             AttributeType: "S"
+          - AttributeName: "LeaderboardPartition"
+            AttributeType: "S"
+          - AttributeName: "Score"
+            AttributeType: "N"
         KeySchema:
           - AttributeName: "SessionID"
             KeyType: "HASH"
         BillingMode: "PAY_PER_REQUEST"
         # Guide for this design https://forums.aws.amazon.com/thread.jspa?threadID=119286
         TableName: ${self:custom.SessionTableName}
+        GlobalSecondaryIndexes:
+          - IndexName: Leaderboard-Index
+            KeySchema:
+              - AttributeName: LeaderboardPartition
+                KeyType: HASH
+              - AttributeName: Score
+                KeyType: RANGE
+            Projection:
+              NonKeyAttributes: []
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 0
+              WriteCapacityUnits: 0
         TimeToLiveSpecification:
           AttributeName: ExpirationTime
           Enabled: True
