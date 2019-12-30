@@ -50,7 +50,7 @@ func Test_getTopLeaderboard(t *testing.T) {
 	values, err = GetTopLeaderboard(10)
 
 	if values[0].Score != 99999999 {
-		log.Print("The top score was not the top score")
+		log.Printf("The top score was not the top score got %d", values[0].Score)
 		t.Fail()
 	}
 
