@@ -55,7 +55,8 @@ func Handler(ctx context.Context, request *Request) (Response, error) {
 		Headers: map[string]string{
 			"Content-Type":			"application/json",
 			"X-WTP-Func-Reply":		"api-Handler",
-			"Access-Control-Allow-Origin": "whosthatpokemon.xyz",
+			"Access-Control-Allow-Origin": "https://whosthatpokemon.xyz",
+			"Vary": "Origin",
 		},
 	}
 	return resp, nil
