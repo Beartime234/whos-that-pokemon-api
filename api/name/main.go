@@ -4,7 +4,9 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"github.com/Beartime234/whos-that-pokemon/whosthatpokemon"
+	goaway "github.com/TwinProduction/go-away"
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 	"log"
@@ -47,6 +49,11 @@ func Handler(ctx context.Context, request Request) (Response, error) {
 		return Response{StatusCode: 404}, err
 	}
 
+	// This does a basic check for profanity
+	if goaway.IsProfane(requestBody.UserName) {
+		return Response{StatusCode:422}, errors.New("profanity")
+	}
+
 	err = session.SetUserName(requestBody.UserName)
 
 	if err != nil {
@@ -68,7 +75,7 @@ func Handler(ctx context.Context, request Request) (Response, error) {
 		Headers: map[string]string{
 			"Content-Type":			"application/json",
 			"X-WTP-Func-Reply":		"api-Handler",
-			"Access-Control-Allow-Origin": "*",
+			"Access-Control-Allow-Origin": "whosthatpokemon.xyz",
 		},
 	}
 	return resp, nil

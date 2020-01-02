@@ -2,6 +2,14 @@
 
 
 [[projects]]
+  digest = "1:fa57419f336e38b62d5b5f4016c67ed45d69781ae0c4d9a505cd365c4f094c58"
+  name = "github.com/TwinProduction/go-away"
+  packages = ["."]
+  pruneopts = ""
+  revision = "7bcc649be0f80896602fc5b7ab45906aa0788ba5"
+  version = "v0.0.1"
+
+[[projects]]
   digest = "1:a0476e860aa63a6901467374135c26fd09e00142d46582afc8f88a97db4beb1f"
   name = "github.com/agnivade/levenshtein"
   packages = ["."]
@@ -119,10 +127,27 @@
   pruneopts = ""
   revision = "c0dbc17a35534bf2e581d7a942408dc936316da4"
 
+[[projects]]
+  digest = "1:740b51a55815493a8d0f2b1e0d0ae48fe48953bf7eaf3fcc4198823bf67768c0"
+  name = "golang.org/x/text"
+  packages = [
+    "internal/gen",
+    "internal/triegen",
+    "internal/ucd",
+    "runes",
+    "transform",
+    "unicode/cldr",
+    "unicode/norm",
+  ]
+  pruneopts = ""
+  revision = "342b2e1fbaa52c93f31447ad2c6abc048c63e475"
+  version = "v0.3.2"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
+    "github.com/TwinProduction/go-away",
     "github.com/agnivade/levenshtein",
     "github.com/aws/aws-lambda-go/events",
     "github.com/aws/aws-lambda-go/lambda",
