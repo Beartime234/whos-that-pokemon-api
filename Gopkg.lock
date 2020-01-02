@@ -120,10 +120,22 @@
   revision = "c2b33e84"
 
 [[projects]]
+  digest = "1:2df0b8a6e19ec66dc382b3660045bb7ab67307dd9583c8e3a3ab33b118993129"
+  name = "github.com/microcosm-cc/bluemonday"
+  packages = ["."]
+  pruneopts = ""
+  revision = "506f3da9b7c86d737e91f16b7431df8635871552"
+  version = "v1.0.2"
+
+[[projects]]
   branch = "master"
   digest = "1:cab37ea831bb9be343b41a7673e64b6bb8399bc0f051180c04ce561573ed2c89"
   name = "golang.org/x/net"
-  packages = ["context"]
+  packages = [
+    "context",
+    "html",
+    "html/atom",
+  ]
   pruneopts = ""
   revision = "c0dbc17a35534bf2e581d7a942408dc936316da4"
 
@@ -155,6 +167,7 @@
     "github.com/aws/aws-sdk-go/aws/session",
     "github.com/google/uuid",
     "github.com/guregu/dynamo",
+    "github.com/microcosm-cc/bluemonday",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1

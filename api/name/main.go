@@ -10,6 +10,7 @@ import (
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 	"log"
+	"github.com/microcosm-cc/bluemonday"
 )
 
 // Response is of type APIGatewayProxyResponse since we're leveraging the
@@ -37,6 +38,7 @@ func NewStartResponseBody(session *whosthatpokemon.GameSession) *NameResponseBod
 // Handler is our lambda handler invoked by the `lambda.Start` function call
 func Handler(ctx context.Context, request Request) (Response, error) {
 	var buf bytes.Buffer
+	p := bluemonday.StrictPolicy()
 
 	log.Printf("Request: %+v", request)
 
@@ -49,12 +51,14 @@ func Handler(ctx context.Context, request Request) (Response, error) {
 		return Response{StatusCode: 404}, err
 	}
 
+	requestUsername := p.Sanitize(requestBody.UserName)
+
 	// This does a basic check for profanity
-	if goaway.IsProfane(requestBody.UserName) {
+	if goaway.IsProfane(requestUsername) {
 		return Response{StatusCode:422}, errors.New("profanity")
 	}
 
-	err = session.SetUserName(requestBody.UserName)
+	err = session.SetUserName(requestUsername)
 
 	if err != nil {
 		return Response{StatusCode: 404}, err
