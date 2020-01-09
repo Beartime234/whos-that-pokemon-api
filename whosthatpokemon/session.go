@@ -6,6 +6,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/google/uuid"
 	"github.com/guregu/dynamo"
+	"github.com/tjarratt/babble"
 	"log"
 	"strings"
 	"time"
@@ -44,7 +45,7 @@ type MaskedGameSession struct {
 //NewGameSession Creates a new Game Session
 func NewGameSession() (*GameSession, error) {
 	id := uuid.New()
-	defaultUserName := generateDefaultUserName(id.String())
+	defaultUserName := generateDefaultUserName()
 	newSession := &GameSession{
 		SessionID:      id.String(),
 		UserName:		defaultUserName,
@@ -211,6 +212,9 @@ func (gs *GameSession) SetUserName(userName string) error {
 }
 
 // generateDefaultUserName generates the default username for a user
-func generateDefaultUserName(id string) string {
-	return "User-" + id[0:5]
+func generateDefaultUserName() string {
+	babbler := babble.NewBabbler()
+	babbler.Separator = "-"
+	babbler.Count = 2
+	return babbler.Babble()
 }
