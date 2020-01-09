@@ -4,10 +4,13 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"github.com/Beartime234/whos-that-pokemon/whosthatpokemon"
+	goaway "github.com/TwinProduction/go-away"
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 	"log"
+	"github.com/microcosm-cc/bluemonday"
 )
 
 // Response is of type APIGatewayProxyResponse since we're leveraging the
@@ -35,6 +38,7 @@ func NewStartResponseBody(session *whosthatpokemon.GameSession) *NameResponseBod
 // Handler is our lambda handler invoked by the `lambda.Start` function call
 func Handler(ctx context.Context, request Request) (Response, error) {
 	var buf bytes.Buffer
+	p := bluemonday.StrictPolicy()
 
 	log.Printf("Request: %+v", request)
 
@@ -47,7 +51,14 @@ func Handler(ctx context.Context, request Request) (Response, error) {
 		return Response{StatusCode: 404}, err
 	}
 
-	err = session.SetUserName(requestBody.UserName)
+	requestUsername := p.Sanitize(requestBody.UserName)
+
+	// This does a basic check for profanity
+	if goaway.IsProfane(requestUsername) {
+		return Response{StatusCode:422}, errors.New("profanity")
+	}
+
+	err = session.SetUserName(requestUsername)
 
 	if err != nil {
 		return Response{StatusCode: 404}, err
@@ -68,7 +79,8 @@ func Handler(ctx context.Context, request Request) (Response, error) {
 		Headers: map[string]string{
 			"Content-Type":			"application/json",
 			"X-WTP-Func-Reply":		"api-Handler",
-			"Access-Control-Allow-Origin": "*",
+			"Access-Control-Allow-Origin": "https://whosthatpokemon.xyz",
+			"Vary": "Origin",
 		},
 	}
 	return resp, nil
