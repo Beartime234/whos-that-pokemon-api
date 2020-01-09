@@ -113,6 +113,14 @@
 
 [[projects]]
   branch = "master"
+  digest = "1:c6be512017e06c918e7b880d93bd74afab7982dc851c092824b002d1141a9370"
+  name = "github.com/tjarratt/babble"
+  packages = ["."]
+  pruneopts = ""
+  revision = "eecdf8c2339de49c56f0e3ac459077db829be7ee"
+
+[[projects]]
+  branch = "master"
   digest = "1:cab37ea831bb9be343b41a7673e64b6bb8399bc0f051180c04ce561573ed2c89"
   name = "golang.org/x/net"
   packages = ["context"]
@@ -130,6 +138,7 @@
     "github.com/aws/aws-sdk-go/aws/session",
     "github.com/google/uuid",
     "github.com/guregu/dynamo",
+    "github.com/tjarratt/babble",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1
