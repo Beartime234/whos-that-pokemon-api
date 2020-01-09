@@ -6,7 +6,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/google/uuid"
 	"github.com/guregu/dynamo"
-	"github.com/tjarratt/babble"
+	"github.com/Beartime234/babble"
 	"log"
 	"strings"
 	"time"
