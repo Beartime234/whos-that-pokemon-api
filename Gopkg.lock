@@ -2,6 +2,14 @@
 
 
 [[projects]]
+  branch = "master"
+  digest = "1:6d433e494cf15cd458eb0f1ec38c9456b46c51b050d87cb49ce7c598fd50b39c"
+  name = "github.com/Beartime234/babble"
+  packages = ["."]
+  pruneopts = ""
+  revision = "38f0c4feb5efc0b387727014b6b42c47e63dee71"
+
+[[projects]]
   digest = "1:fa57419f336e38b62d5b5f4016c67ed45d69781ae0c4d9a505cd365c4f094c58"
   name = "github.com/TwinProduction/go-away"
   packages = ["."]
@@ -129,14 +137,6 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:c6be512017e06c918e7b880d93bd74afab7982dc851c092824b002d1141a9370"
-  name = "github.com/tjarratt/babble"
-  packages = ["."]
-  pruneopts = ""
-  revision = "eecdf8c2339de49c56f0e3ac459077db829be7ee"
-
-[[projects]]
-  branch = "master"
   digest = "1:cab37ea831bb9be343b41a7673e64b6bb8399bc0f051180c04ce561573ed2c89"
   name = "golang.org/x/net"
   packages = [
@@ -167,6 +167,7 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
+    "github.com/Beartime234/babble",
     "github.com/TwinProduction/go-away",
     "github.com/agnivade/levenshtein",
     "github.com/aws/aws-lambda-go/events",
@@ -175,7 +176,6 @@
     "github.com/aws/aws-sdk-go/aws/session",
     "github.com/google/uuid",
     "github.com/guregu/dynamo",
-    "github.com/tjarratt/babble",
     "github.com/microcosm-cc/bluemonday",
   ]
   solver-name = "gps-cdcl"

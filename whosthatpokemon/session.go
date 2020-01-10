@@ -1,12 +1,12 @@
 package whosthatpokemon
 
 import (
+	"github.com/Beartime234/babble"
 	"github.com/agnivade/levenshtein"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/google/uuid"
 	"github.com/guregu/dynamo"
-	"github.com/tjarratt/babble"
 	"log"
 	"strings"
 	"time"
