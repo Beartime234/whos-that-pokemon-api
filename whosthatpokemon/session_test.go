@@ -154,8 +154,42 @@ func TestGameSession_SetUserName(t *testing.T) {
 
 func Test_generateDefaultUserName(t *testing.T) {
 	//got := generateDefaultUserName()
-	//if got != "User-12345" {
-	//	log.Printf("Got %s wanted User-12345", got)
-	//	t.Fail()
-	//}
+	//	//if got != "User-12345" {
+	//	//	log.Printf("Got %s wanted User-12345", got)
+	//	//	t.Fail()
+	//	//}
+}
+
+func TestGameSession_addToPastPokemon(t *testing.T) {
+	session, err := NewGameSession()
+
+	if err != nil {
+		log.Fatal("Failed creating new session not SetUserName")
+	}
+	session.addToPastPokemon(1)
+	session.addToPastPokemon(2)
+	session.addToPastPokemon(3)
+	session.addToPastPokemon(4)
+	session.addToPastPokemon(5)
+	session.addToPastPokemon(6)
+	session.addToPastPokemon(7)
+	session.addToPastPokemon(8)
+	session.addToPastPokemon(9)
+	session.addToPastPokemon(10)
+	session.addToPastPokemon(11)
+	session.addToPastPokemon(12)
+	session.addToPastPokemon(13)
+	session.addToPastPokemon(14)
+	session.addToPastPokemon(15)
+	session.addToPastPokemon(16)
+	session.addToPastPokemon(17)
+	session.addToPastPokemon(18)
+	session.addToPastPokemon(19)
+	session.addToPastPokemon(20)
+	session.addToPastPokemon(21)
+	if session.PastPokemon[0] == 1 {
+		log.Print("The first one was not overwritten")
+		t.Fail()
+	}
+
 }
