@@ -18,7 +18,7 @@ func TestGenerateRandomPokedexID(t *testing.T) {
 // Tests that we are getting everything correctly back. We are just checking that the columns correctly.
 func TestGetRandomPokemon(t *testing.T) {
 	// If any of these fails we probably are getting the wrong dynamo columns
-	got := GetRandomPokemon()
+	got := GetRandomPokemon(nil)
 	if got.PokedexID == 0 {
 		t.Fail()
 	}

@@ -24,11 +24,16 @@ type StrippedPokemon struct {
 }
 
 //GetRandomPokemon Gets a random pokemon from the gallery database
-func GetRandomPokemon() *Pokemon {
+func GetRandomPokemon(notThesePokemon []int) *Pokemon {
 	db := dynamo.New(session.New(), &aws.Config{Region:aws.String("us-east-1", )})
 	table := db.Table(conf.GalleryTable.TableName)
 
 	pokedexID := GenerateRandomPokedexID()
+
+	// This prevents us randomly picking the pokemon in notThesePokemon
+	for intInSlice(pokedexID, notThesePokemon) {
+		pokedexID = GenerateRandomPokedexID()
+	}
 
 	var result *Pokemon
 	err := table.Get(conf.GalleryTable.HashKey, pokedexID).One(&result)
@@ -46,16 +51,26 @@ func GetRandomPokemon() *Pokemon {
 func GenerateRandomPokedexID() int {
 	rand.Seed(time.Now().UnixNano()) // Generate a seed so it's random every time we call this
 	randomNumber := rand.Intn(conf.MaxPokemon) + 1
-	log.Printf("Pokemon SessionID: %d", randomNumber)
+	log.Printf("Pokemon PokedexID: %d", randomNumber)
 	return randomNumber
 }
 
 // newPokemon Gets you a new pokemon picked randomly
-func newPokemon() *Pokemon {
-	return GetRandomPokemon()
+func newPokemon(notThesePokemon []int) *Pokemon {
+	return GetRandomPokemon(notThesePokemon)
 }
 
 // Pokemon_NewStrippedPokemon The information of a pokemon that can be shared to the user
 func (poke *Pokemon) NewStrippedPokemon() *StrippedPokemon {
 	return &StrippedPokemon{BWImageUrl:poke.BWImageUrl}
+}
+
+// intInSlice Helper function for checking if an int is in a slice
+func intInSlice(a int, list []int) bool {
+	for _, b := range list {
+		if b == a {
+			return true
+		}
+	}
+	return false
 }

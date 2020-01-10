@@ -1,16 +1,18 @@
 package whosthatpokemon
 
 import (
+	"github.com/Beartime234/babble"
 	"github.com/agnivade/levenshtein"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/google/uuid"
 	"github.com/guregu/dynamo"
-	"github.com/Beartime234/babble"
 	"log"
 	"strings"
 	"time"
 )
+
+const pastPokemonSize = 10
 
 // GameSession this is the object that controls the flow of the game
 type GameSession struct {
@@ -23,6 +25,7 @@ type GameSession struct {
 	Score                int       // The users current score for this session
 	ExpirationTime       time.Time // When this is removed from the session database
 	LeaderboardPartition string  // This is a randomized value of PARTITION_0, PARTITION_1, PARTITION_2
+	PastPokemon []int  // This records the past pokemon pokedex ID's
 }
 
 // StrippedGameSession this is what is sent back to the application. It is stripped so users cannot see the
@@ -45,17 +48,19 @@ type MaskedGameSession struct {
 //NewGameSession Creates a new Game Session
 func NewGameSession() (*GameSession, error) {
 	id := uuid.New()
+	pastPokemonSlice := make([]int, 0)
 	defaultUserName := generateDefaultUserName()
 	newSession := &GameSession{
 		SessionID:      id.String(),
 		UserName:		defaultUserName,
 		StartTime:      time.Now(),
 		PreviousPokemon:nil,
-		CurrentPokemon: newPokemon(),
-		NextPokemon:newPokemon(),
+		CurrentPokemon: newPokemon(nil),
+		NextPokemon:newPokemon(nil),
 		ExpirationTime: time.Now().Add(time.Hour * 6),  // Create a expiration time for this item.
 		Score:0,
 		LeaderboardPartition:partitionValue,
+		PastPokemon:pastPokemonSlice,
 	}
 	err := newSession.save()
 	if err != nil {
@@ -138,9 +143,10 @@ func (gs *GameSession) save () error {
 // GameSession_newPokemon Generates a new pokemon for the current session
 // NOTE: You would still need to save this
 func (gs *GameSession) newPokemon() error {
-	gs.PreviousPokemon = gs.CurrentPokemon  // Set the previous as next
-	gs.CurrentPokemon = gs.NextPokemon  // Set the current as next
-	gs.NextPokemon = newPokemon() // Get a new pokemon
+	gs.PreviousPokemon = gs.CurrentPokemon           // Set the previous as next
+	gs.addToPastPokemon(gs.CurrentPokemon.PokedexID) // Add the current pokemon to past pokemon
+	gs.CurrentPokemon = gs.NextPokemon               // Set the current as next
+	gs.NextPokemon = newPokemon(gs.PastPokemon)                 // Get a new pokemon
 	return nil
 }
 
@@ -209,6 +215,14 @@ func (gs *GameSession) SetUserName(userName string) error {
 	}
 	log.Printf("Set username to %s", userName)
 	return nil
+}
+
+// GameSession_addToPastPokemon Adds to the past pokemon list
+func (gs *GameSession) addToPastPokemon(pokedexId int) {
+	gs.PastPokemon = append(gs.PastPokemon, pokedexId)
+	if len(gs.PastPokemon) == pastPokemonSize + 1 {
+		gs.PastPokemon = gs.PastPokemon[1:]
+	}
 }
 
 // generateDefaultUserName generates the default username for a user
